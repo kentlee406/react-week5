@@ -1,6 +1,7 @@
 import axios from "axios";
 import "bootstrap";
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 const API_BASE = import.meta.env.VITE_API_BASE;
 const API_PATH = import.meta.env.VITE_API_PATH;
 function Products() {
@@ -32,12 +33,14 @@ function Products() {
                     <div className="card">
                       <img
                         src={product.imageUrl}
-                        class="card-img-top"
+                        className="card-img-top"
                         alt={product.title}
                       />
                       <div className="card-body">
                         <h5 className="card-title">
-                          {product.title}
+                          <Link to={`/product/${product.id}`}>
+                            {product.title}
+                          </Link>
                           <span className="badge bg-primary ms-2">
                             {product.category}
                           </span>

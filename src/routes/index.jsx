@@ -3,7 +3,6 @@ import Cart from "../views/Cart";
 import Home from "../views/Home";
 import Product from "../views/Product";
 import Products from "../views/Products";
-
 const routes = [
   {
     path: "/",
@@ -11,7 +10,7 @@ const routes = [
     children: [
       { index: true, element: <Home /> },
       { path: "products", element: <Products /> },
-      { path: "product", element: <Product /> },
+      { path: "product/:id", element: <Product /> },
       { path: "cart", element: <Cart /> },
     ],
   },
