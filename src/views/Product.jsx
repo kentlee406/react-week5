@@ -1,20 +1,25 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useParams, Link } from "react-router-dom";
 import axios from "axios";
 import "bootstrap";
+import { LoadingContext } from "../context/LoadingContext";
 const API_BASE = import.meta.env.VITE_API_BASE;
 const API_PATH = import.meta.env.VITE_API_PATH;
 function Product() {
   const [product, setProduct] = useState({});
   const { id } = useParams();
+  const { showLoading, hideLoading } = useContext(LoadingContext);
   const getProductData = async () => {
     try {
+      showLoading();
       const response = await axios.get(
         `${API_BASE}/api/${API_PATH}/product/${id}`,
       );
       setProduct(response.data.product);
     } catch (err) {
       console.error(err);
+    } finally {
+      hideLoading();
     }
   };
 
