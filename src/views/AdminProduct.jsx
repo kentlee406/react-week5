@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useContext } from "react";
+import { useNavigate } from "react-router";
 import axios from "axios";
 import { Modal } from "bootstrap";
 import ProductModal from "../component/ProductModal";
@@ -8,6 +9,7 @@ import { LoadingContext } from "../context/LoadingContext";
 const API_BASE = import.meta.env.VITE_API_BASE;
 const API_PATH = import.meta.env.VITE_API_PATH;
 function AdminProduct() {
+  const navigate = useNavigate();
   const { showLoading, hideLoading } = useContext(LoadingContext);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(5);
@@ -62,6 +64,16 @@ function AdminProduct() {
       hideLoading();
     }
   };
+
+  const handleLogout = () => {
+    // 清除 Cookie 中的 token
+    document.cookie = "hexToken=;expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+    // 清除 axios 預設 header
+    axios.defaults.headers.common.Authorization = "";
+    // 導航回登入頁
+    navigate("/login");
+  };
+
   useEffect(() => {
     getProductData();
   }, []);
@@ -70,14 +82,19 @@ function AdminProduct() {
     <div className="container">
       <div className="row justify-content-center">
         <div className="col-8">
-          <div className="d-flex justify-content-between">
+          <div className="d-flex justify-content-between align-items-center mb-3">
             <h2 className="fw-bold">產品列表</h2>
-            <button
-              className="btn btn-success"
-              onClick={() => openModal("create")}
-            >
-              新增產品
-            </button>
+            <div>
+              <button
+                className="btn btn-success me-2"
+                onClick={() => openModal("create")}
+              >
+                新增產品
+              </button>
+              <button className="btn btn-danger" onClick={handleLogout}>
+                登出
+              </button>
+            </div>
           </div>
 
           <table className="table">

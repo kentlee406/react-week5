@@ -9,6 +9,7 @@ const API_PATH = import.meta.env.VITE_API_PATH;
 function Cart() {
   const [cart, setCart] = useState([]);
   const [finalTotal, setFinalTotal] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
   const { showLoading, hideLoading } = useContext(LoadingContext);
   const {
     register,
@@ -20,6 +21,7 @@ function Cart() {
   const onSubmit = async (data) => {
     try {
       showLoading();
+      setIsLoading(true);
       const payload = {
         data: {
           user: {
@@ -39,6 +41,8 @@ function Cart() {
       console.error(err);
       alert("送出訂單失敗，請稍後再試");
       hideLoading();
+    } finally {
+      setIsLoading(false);
     }
   };
   const getCartData = async () => {
@@ -86,10 +90,12 @@ function Cart() {
                   <div className="d-flex align-items-center">
                     <button
                       className="btn btn-secondary btn-sm me-2"
+                      disabled={isLoading}
                       onClick={async () => {
                         const newQty = item.qty - 1;
                         if (newQty < 1) return;
                         try {
+                          setIsLoading(true);
                           await axios.put(
                             `${API_BASE}/api/${API_PATH}/cart/${item.id}`,
                             {
@@ -103,6 +109,8 @@ function Cart() {
                         } catch (err) {
                           console.error(err);
                           alert("更新數量失敗");
+                        } finally {
+                          setIsLoading(false);
                         }
                       }}
                     >
@@ -111,9 +119,11 @@ function Cart() {
                     <span>{item.qty}</span>
                     <button
                       className="btn btn-secondary btn-sm ms-2"
+                      disabled={isLoading}
                       onClick={async () => {
                         const newQty = item.qty + 1;
                         try {
+                          setIsLoading(true);
                           await axios.put(
                             `${API_BASE}/api/${API_PATH}/cart/${item.id}`,
                             {
@@ -127,6 +137,8 @@ function Cart() {
                         } catch (err) {
                           console.error(err);
                           alert("更新數量失敗");
+                        } finally {
+                          setIsLoading(false);
                         }
                       }}
                     >
@@ -139,15 +151,19 @@ function Cart() {
                 <td>
                   <button
                     className="btn btn-danger btn-sm"
+                    disabled={isLoading}
                     onClick={async () => {
                       if (!confirm("確定要刪除此項目嗎？")) return;
                       try {
+                        setIsLoading(true);
                         await axios.delete(
                           `${API_BASE}/api/${API_PATH}/cart/${item.id}`,
                         );
                         getCartData();
                       } catch (err) {
                         alert("刪除失敗，請稍後再試");
+                      } finally {
+                        setIsLoading(false);
                       }
                     }}
                   >
@@ -176,14 +192,17 @@ function Cart() {
       <div className="mb-3">
         <button
           className="btn btn-outline-danger"
-          disabled={cart.length === 0}
+          disabled={cart.length === 0 || isLoading}
           onClick={async () => {
             if (!confirm("確定要清空購物車嗎？")) return;
             try {
+              setIsLoading(true);
               await axios.delete(`${API_BASE}/api/${API_PATH}/carts`);
               getCartData();
             } catch (err) {
               alert("清空購物車失敗，請稍後再試");
+            } finally {
+              setIsLoading(false);
             }
           }}
         >
@@ -252,7 +271,11 @@ function Cart() {
             <label className="form-label">備註</label>
             <textarea className="form-control" {...register("memo")} />
           </div>
-          <button className="btn btn-success" type="submit">
+          <button
+            className="btn btn-success"
+            type="submit"
+            disabled={cart.length === 0 || isLoading}
+          >
             送出訂單
           </button>
         </form>

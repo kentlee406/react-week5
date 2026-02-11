@@ -15,10 +15,10 @@ const routes = [
       { path: "products", element: <Products /> },
       { path: "product/:id", element: <Product /> },
       { path: "cart", element: <Cart /> },
-      { path: "login", element: <AdminLogin /> },
-      { path: "admin/product", element: <AdminProduct /> },
       { path: "*", element: <NotFound /> },
     ],
   },
+  { path: "login", element: <AdminLogin /> },
+  { path: "admin/product", element: <AdminProduct /> },
 ];
 export default routes;

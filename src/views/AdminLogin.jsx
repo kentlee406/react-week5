@@ -64,7 +64,7 @@ function AdminLogin() {
     <div className="container">
       <div className="row justify-content-center">
         <div className="col-6">
-          <h2>登入</h2>
+          <h2>後台登入</h2>
           <form
             id="form"
             className="form-signin"
@@ -98,6 +98,13 @@ function AdminLogin() {
             </div>
             <button type="submit" className="btn btn-primary mb-3">
               登入
+            </button>
+            <button
+              type="button"
+              className="btn btn-secondary mb-3 ms-2"
+              onClick={() => navigate("/")}
+            >
+              返回前台首頁
             </button>
           </form>
         </div>
