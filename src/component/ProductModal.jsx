@@ -2,11 +2,13 @@ import { useState, useEffect, useRef, useContext } from "react";
 import axios from "axios";
 import { Modal } from "bootstrap";
 import { LoadingContext } from "../context/LoadingContext";
+import { useNotification } from "../hooks/useNotification";
 const API_BASE = import.meta.env.VITE_API_BASE;
 const API_PATH = import.meta.env.VITE_API_PATH;
 
 function ProductModal({ mode, tempProduct, getProductData }) {
   const { showLoading, hideLoading } = useContext(LoadingContext);
+  const { showNotification } = useNotification();
   const [modalData, setModalData] = useState({
     ...tempProduct,
     imagesUrl: tempProduct.imagesUrl || ["", "", "", ""],
@@ -69,7 +71,7 @@ function ProductModal({ mode, tempProduct, getProductData }) {
       setModalData((prev) => ({ ...prev, imagesUrl: newImages }));
       setImageInput(""); // 清空輸入框
     } else {
-      alert("最多只能上傳 4 張圖片");
+      showNotification("最多只能上傳 4 張圖片", "warning", 3000);
     }
   };
 
@@ -91,14 +93,22 @@ function ProductModal({ mode, tempProduct, getProductData }) {
       const method = mode === "create" ? "post" : "put";
 
       await axios[method](apiPath, { data: modalData });
-      alert(mode === "create" ? "新增成功" : "更新成功");
+      showNotification(
+        mode === "create" ? "新增成功" : "更新成功",
+        "success",
+        3000,
+      );
 
       await getProductData(); // 重新抓取資料
 
       // 3. 正確隱藏 Modal
       modalInstance.current.hide();
     } catch (error) {
-      alert("操作失敗：" + (error.response?.data?.message || "未知錯誤"));
+      showNotification(
+        "操作失敗：" + (error.response?.data?.message || "未知錯誤"),
+        "error",
+        5000,
+      );
     } finally {
       hideLoading();
     }

@@ -4,6 +4,7 @@ import { useParams, Link } from "react-router-dom";
 import axios from "axios";
 import "bootstrap";
 import { LoadingContext } from "../context/LoadingContext";
+import { useNotification } from "../hooks/useNotification";
 const API_BASE = import.meta.env.VITE_API_BASE;
 const API_PATH = import.meta.env.VITE_API_PATH;
 function Cart() {
@@ -11,6 +12,7 @@ function Cart() {
   const [finalTotal, setFinalTotal] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const { showLoading, hideLoading } = useContext(LoadingContext);
+  const { showNotification } = useNotification();
   const {
     register,
     handleSubmit,
@@ -34,12 +36,12 @@ function Cart() {
         },
       };
       await axios.post(`${API_BASE}/api/${API_PATH}/order`, payload);
-      alert("訂單送出成功");
+      showNotification("訂單送出成功", "success", 3000);
       reset();
       getCartData();
     } catch (err) {
       console.error(err);
-      alert("送出訂單失敗，請稍後再試");
+      showNotification("送出訂單失敗，請稍後再試", "error", 5000);
       hideLoading();
     } finally {
       setIsLoading(false);
@@ -108,7 +110,11 @@ function Cart() {
                           getCartData();
                         } catch (err) {
                           console.error(err);
-                          alert("更新數量失敗");
+                          showNotification(
+                            "更新數量失敗，請稍後再試",
+                            "error",
+                            5000,
+                          );
                         } finally {
                           setIsLoading(false);
                         }
@@ -136,7 +142,11 @@ function Cart() {
                           getCartData();
                         } catch (err) {
                           console.error(err);
-                          alert("更新數量失敗");
+                          showNotification(
+                            "更新數量失敗，請稍後再試",
+                            "error",
+                            5000,
+                          );
                         } finally {
                           setIsLoading(false);
                         }
@@ -161,7 +171,7 @@ function Cart() {
                         );
                         getCartData();
                       } catch (err) {
-                        alert("刪除失敗，請稍後再試");
+                        showNotification("刪除失敗，請稍後再試", "error", 5000);
                       } finally {
                         setIsLoading(false);
                       }
@@ -200,7 +210,7 @@ function Cart() {
               await axios.delete(`${API_BASE}/api/${API_PATH}/carts`);
               getCartData();
             } catch (err) {
-              alert("清空購物車失敗，請稍後再試");
+              showNotification("清空購物車失敗，請稍後再試", "error", 5000);
             } finally {
               setIsLoading(false);
             }

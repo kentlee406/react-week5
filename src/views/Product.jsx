@@ -3,12 +3,14 @@ import { useParams, Link } from "react-router-dom";
 import axios from "axios";
 import "bootstrap";
 import { LoadingContext } from "../context/LoadingContext";
+import { useNotification } from "../hooks/useNotification";
 const API_BASE = import.meta.env.VITE_API_BASE;
 const API_PATH = import.meta.env.VITE_API_PATH;
 function Product() {
   const [product, setProduct] = useState({});
   const { id } = useParams();
   const { showLoading, hideLoading } = useContext(LoadingContext);
+  const { showNotification } = useNotification();
   const getProductData = async () => {
     try {
       showLoading();
@@ -27,9 +29,10 @@ function Product() {
     try {
       const cartData = { data: { product_id: id, qty: 1 } };
       await axios.post(`${API_BASE}/api/${API_PATH}/cart`, cartData);
-      alert("產品已新增至購物車");
+      showNotification("產品已新增至購物車", "success", 3000);
     } catch (err) {
       console.error(err);
+      showNotification("新增購物車失敗，請稍後再試", "error", 5000);
     }
   };
 

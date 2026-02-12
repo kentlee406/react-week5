@@ -4,11 +4,13 @@ import { useForm } from "react-hook-form";
 import axios from "axios";
 import "bootstrap";
 import { LoadingContext } from "../context/LoadingContext";
+import { useNotification } from "../hooks/useNotification";
 const API_BASE = import.meta.env.VITE_API_BASE;
 const API_PATH = import.meta.env.VITE_API_PATH;
 function AdminLogin() {
   const navigate = useNavigate();
   const { showLoading, hideLoading } = useContext(LoadingContext);
+  const { showNotification } = useNotification();
   const {
     register,
     handleSubmit,
@@ -23,7 +25,7 @@ function AdminLogin() {
       axios.defaults.headers.common.Authorization = `${token}`;
       navigate("/admin/product");
     } catch (error) {
-      alert("登入失敗: " + error);
+      showNotification("登入失敗，請檢查帳號密碼", "error", 5000);
       hideLoading();
     }
   };
