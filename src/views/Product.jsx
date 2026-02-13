@@ -43,9 +43,10 @@ function Product() {
   return (
     <div>
       <img
-        src={product.imageUrl | null}
+        src={product.imageUrl}
         className="card-img-top"
         alt={product.title}
+        style={{ height: "50vh", width: "auto" }}
       />
       <h2>
         {product.title}
@@ -63,7 +64,7 @@ function Product() {
         {product.imagesUrl?.map((url, index) => (
           <div key={index} className="col-12 col-md-6 col-lg-3">
             <img
-              src={url | null}
+              src={url}
               alt="小圖"
               className="img-fluid w-100" // 確保圖片填滿容器且不變形
               style={{ objectFit: "cover", aspectRatio: "1/1" }}
