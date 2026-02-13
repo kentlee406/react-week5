@@ -12,7 +12,7 @@ function AdminProduct() {
   const navigate = useNavigate();
   const { showLoading, hideLoading } = useContext(LoadingContext);
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(5);
+  const [pageSize, setPageSize] = useState(10);
   const [products, setProducts] = useState([]);
   const [modalMode, setModalMode] = useState(""); // 追蹤現在是 'create' 還是 'edit'
   const [tempProduct, setTempProduct] = useState({
