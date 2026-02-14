@@ -51,7 +51,7 @@ function Products() {
                             {product.category}
                           </span>
                         </h5>
-                        <p className="card-text">{product.content}</p>
+
                         <div className="d-flex">
                           <p className="card-text text-secondary">
                             <del>{product.origin_price}</del>

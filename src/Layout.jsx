@@ -19,7 +19,7 @@ function Layout() {
       </header>
       <Outlet />
       <footer>
-        <p>TC電腦有限公司 版權所有 轉載必究</p>
+        <p>僅個人作品練習，無任何商業用途</p>
       </footer>
     </div>
   );
