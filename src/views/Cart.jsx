@@ -36,12 +36,11 @@ function Cart() {
         },
       };
       await axios.post(`${API_BASE}/api/${API_PATH}/order`, payload);
-      showNotification("訂單送出成功", "success", 3000);
+      showNotification("訂單送出成功", "success", 6000);
       reset();
       getCartData();
-    } catch (err) {
-      console.error(err);
-      showNotification("送出訂單失敗，請稍後再試", "error", 5000);
+    } catch {
+      showNotification("送出訂單失敗，請稍後再試", "error", 8000);
       hideLoading();
     } finally {
       setIsLoading(false);
@@ -53,8 +52,8 @@ function Cart() {
       const response = await axios.get(`${API_BASE}/api/${API_PATH}/cart`);
       setCart(response.data.data.carts);
       setFinalTotal(response.data.data.final_total);
-    } catch (err) {
-      console.error(err);
+    } catch {
+      showNotification("取得購物車資料失敗，請稍後再試", "error", 8000);
     } finally {
       hideLoading();
     }
@@ -108,12 +107,11 @@ function Cart() {
                             },
                           );
                           getCartData();
-                        } catch (err) {
-                          console.error(err);
+                        } catch {
                           showNotification(
                             "更新數量失敗，請稍後再試",
                             "error",
-                            5000,
+                            8000,
                           );
                         } finally {
                           setIsLoading(false);
@@ -140,12 +138,11 @@ function Cart() {
                             },
                           );
                           getCartData();
-                        } catch (err) {
-                          console.error(err);
+                        } catch {
                           showNotification(
                             "更新數量失敗，請稍後再試",
                             "error",
-                            5000,
+                            8000,
                           );
                         } finally {
                           setIsLoading(false);
@@ -170,8 +167,8 @@ function Cart() {
                           `${API_BASE}/api/${API_PATH}/cart/${item.id}`,
                         );
                         getCartData();
-                      } catch (err) {
-                        showNotification("刪除失敗，請稍後再試", "error", 5000);
+                      } catch {
+                        showNotification("刪除失敗，請稍後再試", "error", 8000);
                       } finally {
                         setIsLoading(false);
                       }
@@ -209,8 +206,8 @@ function Cart() {
               setIsLoading(true);
               await axios.delete(`${API_BASE}/api/${API_PATH}/carts`);
               getCartData();
-            } catch (err) {
-              showNotification("清空購物車失敗，請稍後再試", "error", 5000);
+            } catch {
+              showNotification("清空購物車失敗，請稍後再試", "error", 8000);
             } finally {
               setIsLoading(false);
             }

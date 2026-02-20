@@ -11,7 +11,7 @@ import {
  * Usage example:
  * const { showNotification } = useNotification();
  * showNotification("Success!", "success");
- * showNotification("Error occurred", "error", 5000); // auto-dismiss after 5s
+ * showNotification("Error occurred", "error", 8000); // auto-dismiss after 8s
  */
 export const useNotification = () => {
   const dispatch = useDispatch();

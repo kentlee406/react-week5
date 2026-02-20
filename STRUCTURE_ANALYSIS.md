@@ -34,9 +34,9 @@
 
 #### 🔧 輔助頁面（1個）
 
-| #   | 頁面名稱 | 文件名       | 路由 | 狀態 |
-| --- | -------- | ------------ | ---- | ---- |
-| 8   | 404錯誤  | NotFound.jsx | `/*` | 輔助 |
+| #   | 頁面名稱 | 文件名       | 路由        | 狀態 |
+| --- | -------- | ------------ | ----------- | ---- |
+| 8   | 404錯誤  | NotFound.jsx | `*`（全局） | 輔助 |
 
 ---
 
@@ -307,11 +307,11 @@ const routes = [
       { path: "product/:id", element: <Product /> },
       { path: "cart", element: <Cart /> },
       { path: "checkout", element: <Checkout /> },  // ✅ 新增
-      { path: "*", element: <NotFound /> },
     ],
   },
   { path: "login", element: <AdminLogin /> },
   { path: "admin/product", element: <AdminProduct /> },
+   { path: "*", element: <NotFound /> },
 ];
 ```
 

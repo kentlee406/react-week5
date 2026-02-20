@@ -1,14 +1,10 @@
 import { NavLink, Outlet } from "react-router";
-import "./scss/all.scss";
-import "bootstrap/dist/css/bootstrap.min.css";
 import Loading from "./component/Loading";
-import { Notification } from "./component/Notification";
 
 function Layout() {
   return (
     <div className="container">
       <Loading />
-      <Notification />
       <header>
         <h1>Tech Choice 3C電子商務</h1>
         <nav>

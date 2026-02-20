@@ -3,11 +3,13 @@ import axios from "axios";
 import { Modal } from "bootstrap";
 import { LoadingContext } from "../context/LoadingContext";
 import { useNotification } from "../hooks/useNotification";
+import { formatApiErrorMessage } from "../utils/formatApiErrorMessage";
 const API_BASE = import.meta.env.VITE_API_BASE;
 const API_PATH = import.meta.env.VITE_API_PATH;
 
 function ProductModal({ mode, tempProduct, getProductData }) {
   const { showLoading, hideLoading } = useContext(LoadingContext);
+  // 統一走 Redux 通知（取代 alert），與刪除流程一致
   const { showNotification } = useNotification();
   const [modalData, setModalData] = useState({
     ...tempProduct,
@@ -15,6 +17,7 @@ function ProductModal({ mode, tempProduct, getProductData }) {
   });
 
   const [imageInput, setImageInput] = useState(""); // 暫存輸入框的網址
+  const [isUploadingMainImage, setIsUploadingMainImage] = useState(false);
   const modalElement = useRef(null);
   const modalInstance = useRef(null);
 
@@ -59,6 +62,44 @@ function ProductModal({ mode, tempProduct, getProductData }) {
     }));
   };
 
+  const handleMainImageUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("file-to-upload", file);
+
+    try {
+      setIsUploadingMainImage(true);
+      showLoading();
+      const response = await axios.post(
+        `${API_BASE}/api/${API_PATH}/admin/upload`,
+        formData,
+      );
+
+      const imageUrl = response.data?.imageUrl;
+      if (!imageUrl) {
+        throw new Error("上傳成功但未取得圖片網址");
+      }
+
+      setModalData((prev) => ({ ...prev, imageUrl }));
+      // 主圖上傳成功提示
+      showNotification("主圖上傳成功", "success", 6000);
+    } catch (error) {
+      // 主圖上傳失敗提示
+      showNotification(
+        "主圖上傳失敗：" +
+          (error.response?.data?.message || error.message || "未知錯誤"),
+        "error",
+        8000,
+      );
+    } finally {
+      setIsUploadingMainImage(false);
+      hideLoading();
+      e.target.value = "";
+    }
+  };
+
   // 新增圖片網址邏輯
   const handleAddImage = () => {
     if (!imageInput.trim()) return;
@@ -71,7 +112,7 @@ function ProductModal({ mode, tempProduct, getProductData }) {
       setModalData((prev) => ({ ...prev, imagesUrl: newImages }));
       setImageInput(""); // 清空輸入框
     } else {
-      showNotification("最多只能上傳 4 張圖片", "warning", 3000);
+      alert("最多只能上傳 4 張圖片");
     }
   };
 
@@ -93,10 +134,11 @@ function ProductModal({ mode, tempProduct, getProductData }) {
       const method = mode === "create" ? "post" : "put";
 
       await axios[method](apiPath, { data: modalData });
+      // 新增/編輯成功都顯示通知
       showNotification(
         mode === "create" ? "新增成功" : "更新成功",
         "success",
-        3000,
+        6000,
       );
 
       await getProductData(); // 重新抓取資料
@@ -104,11 +146,11 @@ function ProductModal({ mode, tempProduct, getProductData }) {
       // 3. 正確隱藏 Modal
       modalInstance.current.hide();
     } catch (error) {
-      showNotification(
-        "操作失敗：" + (error.response?.data?.message || "未知錯誤"),
-        "error",
-        5000,
+      const message = formatApiErrorMessage(
+        error.response?.data?.message || "未知錯誤",
       );
+      // 新增/編輯失敗通知
+      showNotification("操作失敗：" + message, "error", 8000);
     } finally {
       hideLoading();
     }
@@ -264,15 +306,45 @@ function ProductModal({ mode, tempProduct, getProductData }) {
 
                 {/* 右側圖片上傳與預覽 */}
                 <div className="col-lg-5">
-                  <label className="form-label fw-bold">商品主圖 (URL)</label>
+                  <label
+                    htmlFor="mainImageUpload"
+                    className="form-label fw-bold"
+                  >
+                    商品主圖（檔案上傳）
+                  </label>
                   <input
-                    type="text"
-                    className="form-control mb-3"
-                    id="imageUrl"
-                    value={modalData.imageUrl || ""}
-                    onChange={handleInputChange}
-                    placeholder="主圖連結"
+                    type="file"
+                    className="form-control mb-2"
+                    id="mainImageUpload"
+                    accept="image/*"
+                    onChange={handleMainImageUpload}
+                    disabled={isUploadingMainImage}
                   />
+                  {isUploadingMainImage && (
+                    <small className="text-muted d-block mb-2">
+                      主圖上傳中...
+                    </small>
+                  )}
+                  {modalData.imageUrl ? (
+                    <div
+                      className="border rounded bg-light d-flex align-items-center justify-content-center mb-3"
+                      style={{ height: "160px", overflow: "hidden" }}
+                    >
+                      <img
+                        src={modalData.imageUrl}
+                        alt="主圖預覽"
+                        className="w-100 h-100 object-fit-cover"
+                        onError={(e) => {
+                          e.target.src =
+                            "https://via.placeholder.com/300x160?text=Invalid+Image";
+                        }}
+                      />
+                    </div>
+                  ) : (
+                    <small className="text-muted d-block mb-3">
+                      尚未上傳主圖
+                    </small>
+                  )}
 
                   <label className="form-label fw-bold">
                     其他圖片 (最多 4 張)

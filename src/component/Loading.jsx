@@ -3,10 +3,11 @@ import { LoadingContext } from "../context/LoadingContext";
 import { MutatingDots } from "react-loader-spinner";
 import "../scss/loading.scss";
 
-function Loading() {
+function Loading({ forceShow = false }) {
   const { isLoading } = useContext(LoadingContext);
 
-  if (!isLoading) return null;
+  // forceShow 給 Suspense fallback 使用，不依賴 context 狀態
+  if (!isLoading && !forceShow) return null;
 
   return (
     <div className="loading-overlay">

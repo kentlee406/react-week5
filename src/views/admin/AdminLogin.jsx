@@ -2,9 +2,8 @@ import { useEffect, useContext } from "react";
 import { useNavigate } from "react-router";
 import { useForm } from "react-hook-form";
 import axios from "axios";
-import "bootstrap";
-import { LoadingContext } from "../context/LoadingContext";
-import { useNotification } from "../hooks/useNotification";
+import { LoadingContext } from "../../context/LoadingContext";
+import { useNotification } from "../../hooks/useNotification";
 const API_BASE = import.meta.env.VITE_API_BASE;
 const API_PATH = import.meta.env.VITE_API_PATH;
 function AdminLogin() {
@@ -25,11 +24,10 @@ function AdminLogin() {
       axios.defaults.headers.common.Authorization = `${token}`;
       navigate("/admin/product");
     } catch (error) {
-      showNotification("登入失敗，請檢查帳號密碼", "error", 5000);
+      showNotification("登入失敗，請檢查帳號密碼", "error", 8000);
       hideLoading();
     }
   };
-  console.log(errors);
   useEffect(() => {
     // 嘗試從 Cookie 取得 Token
     const token = document.cookie
@@ -54,8 +52,8 @@ function AdminLogin() {
 
       // 3. 驗證成功後直接進入後台
       navigate("/admin/product");
-    } catch (error) {
-      console.error("驗證失敗或 Token 過期", error);
+    } catch {
+      console.error("驗證失敗或 Token 已過期，請重新登入");
       // 驗證失敗可以選擇清空 header，讓使用者留在登入頁
       axios.defaults.headers.common.Authorization = "";
       hideLoading();

@@ -18,8 +18,8 @@ function Product() {
         `${API_BASE}/api/${API_PATH}/product/${id}`,
       );
       setProduct(response.data.product);
-    } catch (err) {
-      console.error(err);
+    } catch {
+      showNotification("取得產品資訊失敗，請稍後再試", "error", 8000);
     } finally {
       hideLoading();
     }
@@ -29,10 +29,9 @@ function Product() {
     try {
       const cartData = { data: { product_id: id, qty: 1 } };
       await axios.post(`${API_BASE}/api/${API_PATH}/cart`, cartData);
-      showNotification("產品已新增至購物車", "success", 3000);
-    } catch (err) {
-      console.error(err);
-      showNotification("新增購物車失敗，請稍後再試", "error", 5000);
+      showNotification("產品已新增至購物車", "success", 6000);
+    } catch {
+      showNotification("新增購物車失敗，請稍後再試", "error", 8000);
     }
   };
 

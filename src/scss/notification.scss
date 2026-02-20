@@ -1,3 +1,6 @@
+// 使用 Sass color module，避免 darken() 舊語法警告
+@use "sass:color";
+
 $notification-success: #28a745;
 $notification-error: #dc3545;
 $notification-warning: #ffc107;
@@ -34,25 +37,25 @@ $notification-info: #17a2b8;
   &.notification-success {
     background-color: $notification-success;
     color: white;
-    border-left: 4px solid darken($notification-success, 10%);
+    border-left: 4px solid color.adjust($notification-success, $lightness: -10%);
   }
 
   &.notification-error {
     background-color: $notification-error;
     color: white;
-    border-left: 4px solid darken($notification-error, 10%);
+    border-left: 4px solid color.adjust($notification-error, $lightness: -10%);
   }
 
   &.notification-warning {
     background-color: $notification-warning;
     color: #333;
-    border-left: 4px solid darken($notification-warning, 10%);
+    border-left: 4px solid color.adjust($notification-warning, $lightness: -10%);
   }
 
   &.notification-info {
     background-color: $notification-info;
     color: white;
-    border-left: 4px solid darken($notification-info, 10%);
+    border-left: 4px solid color.adjust($notification-info, $lightness: -10%);
   }
 }
 

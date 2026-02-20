@@ -3,6 +3,7 @@ import axios from "axios";
 import { Modal } from "bootstrap";
 import { LoadingContext } from "../context/LoadingContext";
 import { useNotification } from "../hooks/useNotification";
+import { formatApiErrorMessage } from "../utils/formatApiErrorMessage";
 const API_BASE = import.meta.env.VITE_API_BASE;
 const API_PATH = import.meta.env.VITE_API_PATH;
 
@@ -17,13 +18,15 @@ function DeleteModal({ getProductData, tempProduct }) {
         `${API_BASE}/api/${API_PATH}/admin/product/${tempProduct.id}`,
       );
 
-      showNotification("刪除成功", "success", 3000);
+      showNotification("刪除成功", "success", 6000);
 
       // 1. 刷新父組件的產品列表
       await getProductData();
     } catch (error) {
-      const message = error.response?.data?.message || "發生錯誤";
-      showNotification(`刪除失敗：${message}`, "error", 5000);
+      const message = formatApiErrorMessage(
+        error.response?.data?.message || "發生錯誤",
+      );
+      showNotification(`刪除失敗：${message}`, "error", 8000);
     } finally {
       hideLoading();
     }

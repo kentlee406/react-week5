@@ -1,5 +1,13 @@
-function Pagination({ products, pageSize, currentPage, setCurrentPage }) {
-  const totalPage = Math.ceil(products.length / pageSize) || 0;
+function Pagination({
+  products,
+  pageSize,
+  currentPage,
+  setCurrentPage,
+  pagination,
+  onPageChange,
+}) {
+  const totalPage =
+    pagination?.total_pages || Math.ceil(products.length / pageSize) || 0;
   const PageList = [];
   for (let i = 1; i <= totalPage; i++) {
     PageList.push(i);
@@ -18,7 +26,12 @@ function Pagination({ products, pageSize, currentPage, setCurrentPage }) {
                 href="#"
                 onClick={(e) => {
                   e.preventDefault();
-                  if (page !== currentPage) setCurrentPage(page);
+                  if (page !== currentPage) {
+                    setCurrentPage(page);
+                    if (onPageChange) {
+                      onPageChange(page);
+                    }
+                  }
                 }}
               >
                 {page}

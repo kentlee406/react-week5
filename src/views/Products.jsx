@@ -3,11 +3,13 @@ import "bootstrap";
 import { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 import { LoadingContext } from "../context/LoadingContext";
+import { useNotification } from "../hooks/useNotification";
 const API_BASE = import.meta.env.VITE_API_BASE;
 const API_PATH = import.meta.env.VITE_API_PATH;
 function Products() {
   const [products, setProducts] = useState([]);
   const { showLoading, hideLoading } = useContext(LoadingContext);
+  const { showNotification } = useNotification();
 
   const getProductData = async () => {
     try {
@@ -16,8 +18,8 @@ function Products() {
         `${API_BASE}/api/${API_PATH}/products/all`,
       );
       setProducts(response.data.products);
-    } catch (err) {
-      console.error(err);
+    } catch {
+      showNotification("取得產品列表失敗，請稍後再試", "error", 8000);
     } finally {
       hideLoading();
     }
